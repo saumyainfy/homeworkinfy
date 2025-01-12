@@ -1,39 +1,47 @@
 package com.example.homework.service;
 
-import com.example.homework.model.RewardPointsResponse;
 import com.example.homework.model.Transaction;
+import com.example.homework.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class RewardService {
+    private final TransactionRepository transactionRepository;
 
-    public BigDecimal calculatePoints(BigDecimal amount) {
-        BigDecimal points = BigDecimal.ZERO;
-        if (amount.compareTo(new BigDecimal("100")) > 0) {
-            BigDecimal above100 = amount.subtract(new BigDecimal("100"));
-            points = points.add(above100.multiply(new BigDecimal("2")));
-            amount = new BigDecimal("100");
-        }
-        if (amount.compareTo(new BigDecimal("50")) > 0) {
-            BigDecimal between50and100 = amount.subtract(new BigDecimal("50"));
-            points = points.add(between50and100.multiply(new BigDecimal("1")));
-        }
-        return points;
+    public RewardService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
 
-    public List<RewardPointsResponse> calculateMonthlyRewards(List<Transaction> transactions) {
+    public int calculatePoints(double amount) {//$120
+        if (amount <= 50) {
+            return 0;
+        } else if (amount <= 100) {
+            return (int) (amount - 50);
+        } else {
+            return (int) ((amount - 100) * 2 + 50);// (120-100)*2 + 50 =20*2+50=40+50=90
+        }
+    }
+
+    public int getCustomerRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+
+        List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
+        return transactions.stream().mapToInt(t -> calculatePoints(t.getAmount())).sum();
+    }
+    // New method to calculate monthly rewards
+    public Map<YearMonth, Integer> getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+        // Fetch all transactions for the given customer within the date range
+        List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
+
+        // Group transactions by YearMonth and calculate rewards for each group
         return transactions.stream()
                 .collect(Collectors.groupingBy(
-                        transaction -> transaction.getTransactionDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().getMonth().toString(),
-                        Collectors.groupingBy(Transaction::getCustomerId, Collectors.reducing(BigDecimal.ZERO, transaction -> calculatePoints(transaction.getTransactionAmount()), BigDecimal::add))
-                ))
-                .entrySet().stream()
-                .flatMap(monthEntry -> monthEntry.getValue().entrySet().stream()
-                        .map(entry -> new RewardPointsResponse(entry.getKey(), monthEntry.getKey(), entry.getValue())))
-                .collect(Collectors.toList());
+                        transaction -> YearMonth.from(transaction.getDate()), // Group by YearMonth
+                        Collectors.summingInt(transaction -> calculatePoints(transaction.getAmount())) // Sum up rewards per month
+                ));
     }
 }

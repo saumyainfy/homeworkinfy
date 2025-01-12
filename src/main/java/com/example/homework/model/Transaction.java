@@ -1,38 +1,50 @@
 package com.example.homework.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDate;
 
+@Data
+@Entity
 public class Transaction {
-    private int customerId;
-    private Date transactionDate;
-    private BigDecimal transactionAmount;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Transaction(int i, Date date, BigDecimal bigDecimal) {
+    private LocalDate date;
+
+    private Double amount;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    public Transaction() {
     }
 
-    // Getters and setters
-    public int getCustomerId() {
-        return customerId;
+    public Transaction(long l, LocalDate of, double v, Object o) {
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    //getter setter
+    public LocalDate getDate() {
+        return date;
     }
 
-    public Date getTransactionDate() {
-        return transactionDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public BigDecimal getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.transactionAmount = transactionAmount;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }
