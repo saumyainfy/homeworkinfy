@@ -1,52 +1,17 @@
-POST http://localhost:8080/api/rewards/calculate
-REQUEST
-[
-  {
+ GET http://localhost:8080/api/rewards/customer/1?startDate=2025-01-01&endDate=2025-03-31
+ SAMPLE REQUEST 
+ SAMPLE RESPONSE 
+ {
+    "endDate": "2025-03-31",
     "customerId": 1,
-    "transactionDate": "2025-01-01",
-    "transactionAmount": 120.00
-  },
-  {
-    "customerId": 1,
-    "transactionDate": "2025-01-15",
-    "transactionAmount": 80.00
-  },
-  {
-    "customerId": 2,
-    "transactionDate": "2025-01-10",
-    "transactionAmount": 150.00
-  },
-  {
-    "customerId": 3,
-    "transactionDate": "2025-02-20",
-    "transactionAmount": 200.00
-  },
-  {
-    "customerId": 1,
-    "transactionDate": "2025-03-05",
-    "transactionAmount": 95.00
-  }
-]
-RESPONSE
-[
-    {
-        "customerId": 1,
-        "month": "JANUARY",
-        "totalPoints": 120.00
-    },
-    {
-        "customerId": 2,
-        "month": "JANUARY",
-        "totalPoints": 150.00
-    },
-    {
-        "customerId": 1,
-        "month": "MARCH",
-        "totalPoints": 45.00
-    },
-    {
-        "customerId": 3,
-        "month": "FEBRUARY",
-        "totalPoints": 250.00
-    }
-]
+    "customerName": "Alice",
+    "startDate": "2025-01-01",
+    "totalRewards": 365
+}
+ GET http://localhost:8080/api/rewards/customer/1/monthly?startDate=2025-01-01&endDate=2025-03-31
+ SAMPLE REQUEST 
+ SAMPLE RESPONSE 
+ {
+    "2025-02": 250,
+    "2025-01": 115
+}
