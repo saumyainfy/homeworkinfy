@@ -49,18 +49,26 @@ public class RewardService {
         return response;
     }
     // New method to calculate monthly rewards
-    public Map<YearMonth, Integer> getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+    public Map<String, Object> getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
         // Check if customer exists
         customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
         // Fetch all transactions for the given customer within the date range
         List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
-
         // Group transactions by YearMonth and calculate rewards for each group
-        return transactions.stream()
+        Map<String, Integer> monthlyRewards = transactions.stream()
                 .collect(Collectors.groupingBy(
-                        transaction -> YearMonth.from(transaction.getDate()), // Group by YearMonth
+                        transaction -> YearMonth.from(transaction.getDate()).toString(), // Convert YearMonth to String
                         Collectors.summingInt(transaction -> calculatePoints(transaction.getAmount())) // Sum up rewards per month
                 ));
+
+        // Build the response map
+        Map<String, Object> response = new HashMap<>();
+        response.put("customerId", customerId);
+        response.put("startDate", startDate.toString());
+        response.put("endDate", endDate.toString());
+        response.put("monthlyRewards", monthlyRewards);
+
+        return response;
     }
 }

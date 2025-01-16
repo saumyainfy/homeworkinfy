@@ -6,7 +6,6 @@ import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class RewardController {
     }
 
     @GetMapping("/customer/{customerId}/monthly")
-    public Map<YearMonth, Integer> getMonthlyRewards(
+    public Map<String, Object> getMonthlyRewards(
             @PathVariable Long customerId,
             @RequestParam String startDate,
             @RequestParam String endDate) {
