@@ -4,6 +4,8 @@ import com.example.homework.model.Customer;
 import com.example.homework.model.Transaction;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.repository.TransactionRepository;
+import dto.CustomerRewardsDTO;
+import dto.MonthlyRewardsDTO;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -32,7 +34,7 @@ public class RewardService {
         }
     }
 
-    public Map<String,Object> getCustomerRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+    public CustomerRewardsDTO getCustomerRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
 
 
@@ -40,16 +42,17 @@ public class RewardService {
 
         int totalRewards = transactions.stream().mapToInt(t -> calculatePoints(t.getAmount())).sum();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("customerId", customer.getId());
-        response.put("customerName", customer.getName());
-        response.put("startDate", startDate);
-        response.put("endDate", endDate);
-        response.put("totalRewards", totalRewards);
-        return response;
+        CustomerRewardsDTO dto = new CustomerRewardsDTO();
+        dto.setCustomerId(customer.getId());
+        dto.setCustomerName(customer.getName());
+        dto.setStartDate(startDate);
+        dto.setEndDate(endDate);
+        dto.setTotalRewards(totalRewards);
+        return dto;
+
     }
     // New method to calculate monthly rewards
-    public Map<String, Object> getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+    public MonthlyRewardsDTO getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
         // Check if customer exists
         customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -63,12 +66,12 @@ public class RewardService {
                 ));
 
         // Build the response map
-        Map<String, Object> response = new HashMap<>();
-        response.put("customerId", customerId);
-        response.put("startDate", startDate.toString());
-        response.put("endDate", endDate.toString());
-        response.put("monthlyRewards", monthlyRewards);
+        MonthlyRewardsDTO dto = new MonthlyRewardsDTO();
+        dto.setCustomerId(customerId);
+        dto.setStartDate(startDate);
+        dto.setEndDate(endDate);
+        dto.setMonthlyRewards(monthlyRewards);
 
-        return response;
+        return dto;
     }
 }

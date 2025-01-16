@@ -4,6 +4,8 @@ package com.example.homework.controller;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
+import dto.CustomerRewardsDTO;
+import dto.MonthlyRewardsDTO;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +22,7 @@ public class RewardController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public Map<String, Object> getCustomerRewards(
+    public CustomerRewardsDTO getCustomerRewards(
             @PathVariable Long customerId,
             @RequestParam String startDate,
             @RequestParam String endDate) {
@@ -35,7 +37,7 @@ public class RewardController {
     }
 
     @GetMapping("/customer/{customerId}/monthly")
-    public Map<String, Object> getMonthlyRewards(
+    public MonthlyRewardsDTO getMonthlyRewards(
             @PathVariable Long customerId,
             @RequestParam String startDate,
             @RequestParam String endDate) {
