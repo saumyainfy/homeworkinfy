@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 
 @Data
 @Entity
@@ -18,6 +17,4 @@ public class Customer {
 
     private String name;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Transaction> transactions;
 }

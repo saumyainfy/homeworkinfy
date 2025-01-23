@@ -1,15 +1,13 @@
 package com.example.homework.service;
 
-import com.example.homework.model.Customer;
 import com.example.homework.model.Transaction;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.repository.TransactionRepository;
-import dto.CustomerRewardsDTO;
 import dto.MonthlyRewardsDTO;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.HashMap;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,30 +32,22 @@ public class RewardService {
         }
     }
 
-    public CustomerRewardsDTO getCustomerRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
-
-
-        List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
-
-        int totalRewards = transactions.stream().mapToInt(t -> calculatePoints(t.getAmount())).sum();
-
-        CustomerRewardsDTO dto = new CustomerRewardsDTO();
-        dto.setCustomerId(customer.getId());
-        dto.setCustomerName(customer.getName());
-        dto.setStartDate(startDate);
-        dto.setEndDate(endDate);
-        dto.setTotalRewards(totalRewards);
-        return dto;
-
-    }
-    // New method to calculate monthly rewards
-    public MonthlyRewardsDTO getMonthlyRewards(Long customerId, LocalDate startDate, LocalDate endDate) {
+    public MonthlyRewardsDTO getMonthlyRewards(Long customerId, String start, String end) {
         // Check if customer exists
         customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
+        LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
+         String customerName = customerRepository.findById(customerId).get().getName();
         // Fetch all transactions for the given customer within the date range
         List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
+
+       //filtered transaction
+        List<Transaction> filteredTransactions = transactions.stream()
+                .filter(transaction -> !transaction.getDate().isBefore(startDate) && !transaction.getDate().isAfter(endDate))
+                .collect(Collectors.toList());
+
         // Group transactions by YearMonth and calculate rewards for each group
         Map<String, Integer> monthlyRewards = transactions.stream()
                 .collect(Collectors.groupingBy(
@@ -68,9 +58,11 @@ public class RewardService {
         // Build the response map
         MonthlyRewardsDTO dto = new MonthlyRewardsDTO();
         dto.setCustomerId(customerId);
+        dto.setCustomerName(customerName);
         dto.setStartDate(startDate);
         dto.setEndDate(endDate);
         dto.setMonthlyRewards(monthlyRewards);
+        dto.setTransactions(filteredTransactions);
 
         return dto;
     }

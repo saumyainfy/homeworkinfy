@@ -4,12 +4,10 @@ package com.example.homework.controller;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
-import dto.CustomerRewardsDTO;
 import dto.MonthlyRewardsDTO;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rewards")
@@ -21,33 +19,18 @@ public class RewardController {
         this.rewardService = rewardService;
     }
 
-    @GetMapping("/customer/{customerId}")
-    public CustomerRewardsDTO getCustomerRewards(
-            @PathVariable Long customerId,
-            @RequestParam String startDate,
-            @RequestParam String endDate) {
-        //validation logic
-        RequestValidator.validateCustomerId(customerId);
-        RequestValidator.validateAndParseDates(startDate, endDate);
-        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
-
-        return rewardService.getCustomerRewards(customerId, start, end);
-
-    }
-
     @GetMapping("/customer/{customerId}/monthly")
     public MonthlyRewardsDTO getMonthlyRewards(
             @PathVariable Long customerId,
             @RequestParam String startDate,
             @RequestParam String endDate) {
+
         // Validate input (delegated to utility)
         RequestValidator.validateCustomerId(customerId);
         RequestValidator.validateAndParseDates(startDate, endDate);
-        LocalDate start = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
-        LocalDate end = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
+
         // Get monthly rewards
-        return rewardService.getMonthlyRewards(customerId, start, end);
+        return rewardService.getMonthlyRewards(customerId, startDate, endDate);
     }
 
 }
