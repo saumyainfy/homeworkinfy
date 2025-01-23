@@ -61,7 +61,7 @@ GET http://localhost:8080/api/rewards/customer/1/monthly?startDate=2025-01-01&en
 ## Installation and Setup
 1. Clone the repository:
    ```bash
-   git clone git clone 
+   git clone git clone https://github.com/saumyainfy/homeworkinfy/tree/master
    ```
 2. Build the project using Maven:
    ```bash
