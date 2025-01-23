@@ -6,8 +6,6 @@ import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
 import dto.MonthlyRewardsDTO;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/rewards")
