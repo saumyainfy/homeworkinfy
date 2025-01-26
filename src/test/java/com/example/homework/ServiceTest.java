@@ -24,7 +24,7 @@ import com.example.homework.repository.TransactionRepository;
 import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
 
-import dto.MonthlyRewardsDTO;
+import com.example.homework.dto.MonthlyRewardsDTO;
 
 @ExtendWith(MockitoExtension.class)
 class RewardServiceTest {
