@@ -3,7 +3,7 @@ package com.example.homework.service;
 import com.example.homework.model.Transaction;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.repository.TransactionRepository;
-import dto.MonthlyRewardsDTO;
+import com.example.homework.dto.MonthlyRewardsDTO;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -39,7 +39,7 @@ public class RewardService {
 
         LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
         LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
-         String customerName = customerRepository.findById(customerId).get().getName();
+        String customerName = customerRepository.findById(customerId).get().getName();
         // Fetch all transactions for the given customer within the date range
         List<Transaction> transactions = transactionRepository.findAllByCustomerIdAndDateBetween(customerId, startDate, endDate);
 

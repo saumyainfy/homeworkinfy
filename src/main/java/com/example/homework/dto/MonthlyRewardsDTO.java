@@ -1,4 +1,4 @@
-package dto;
+package com.example.homework.dto;
 
 import com.example.homework.model.Transaction;
 import com.fasterxml.jackson.annotation.JsonIgnore;

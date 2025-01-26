@@ -4,7 +4,7 @@ package com.example.homework.controller;
 import com.example.homework.repository.CustomerRepository;
 import com.example.homework.service.RewardService;
 import com.example.homework.util.RequestValidator;
-import dto.MonthlyRewardsDTO;
+import com.example.homework.dto.MonthlyRewardsDTO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
